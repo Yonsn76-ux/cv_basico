@@ -1,0 +1,33 @@
+Ana Patricia González Martín
+Ingeniera de Software Senior
+Email: ana.gonzalez@tech.com
+Teléfono: +34 666 777 888
+
+EXPERIENCIA PROFESIONAL:
+- Senior Software Engineer en TechCorp (2020-2024) - 4 años de experiencia
+- Full Stack Developer en StartupTech (2018-2020) - 2 años
+- Junior Developer en SoftwareSolutions (2017-2018) - 1 año
+
+EDUCACIÓN:
+- Ingeniería en Sistemas Computacionales - Universidad Tecnológica (2017)
+- Maestría en Ciencias de la Computación - Instituto Politécnico (2019)
+
+HABILIDADES TÉCNICAS:
+- Lenguajes: Python, Java, JavaScript, TypeScript, C#, Go
+- Frontend: React, Angular, Vue.js, HTML5, CSS3, Bootstrap
+- Backend: Node.js, Express, Django, Flask, Spring Boot, .NET
+- Bases de datos: PostgreSQL, MySQL, MongoDB, Redis
+- Cloud: AWS, Azure, Google Cloud Platform
+- DevOps: Docker, Kubernetes, Jenkins, GitLab CI/CD
+- Herramientas: Git, GitHub, Jira, Confluence
+
+PROYECTOS:
+- Desarrollo de plataforma e-commerce con microservicios
+- API REST para aplicación móvil con 100k+ usuarios
+- Sistema de gestión empresarial con React y Node.js
+- Migración de aplicaciones legacy a la nube
+
+CERTIFICACIONES:
+- AWS Certified Solutions Architect
+- Certified Kubernetes Administrator (CKA)
+- Scrum Master Certified

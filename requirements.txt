@@ -1,0 +1,13 @@
+# Clasificador de CVs por Profesiones - Versión Simplificada
+PyQt6
+PyPDF2
+pytesseract
+python-docx
+opencv-python
+Pillow
+pandas
+numpy
+scikit-learn
+tensorflow
+matplotlib
+joblib

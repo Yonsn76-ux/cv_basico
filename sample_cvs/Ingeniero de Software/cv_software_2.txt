@@ -1,0 +1,34 @@
+Roberto Carlos Fernández Ruiz
+Desarrollador Full Stack
+Email: roberto.fernandez@dev.com
+Teléfono: +34 444 555 666
+
+EXPERIENCIA PROFESIONAL:
+- Lead Developer en InnovaTech (2019-2024) - 5 años de experiencia
+- Software Developer en WebSolutions (2017-2019) - 2 años
+- Programador Junior en CodeFactory (2016-2017) - 1 año
+
+EDUCACIÓN:
+- Licenciatura en Informática - Universidad de Ciencias (2016)
+- Bootcamp Full Stack Development - CodeAcademy (2017)
+
+STACK TECNOLÓGICO:
+- Frontend: React, Redux, Next.js, Tailwind CSS
+- Backend: Node.js, Express, Python, Django
+- Bases de datos: PostgreSQL, MongoDB, Firebase
+- Mobile: React Native, Flutter
+- Testing: Jest, Cypress, Selenium
+- Deployment: Vercel, Netlify, Heroku, DigitalOcean
+
+EXPERIENCIA:
+- Desarrollo de aplicaciones web responsivas
+- Arquitectura de microservicios
+- Integración de APIs de terceros
+- Optimización de rendimiento web
+- Metodologías ágiles (Scrum, Kanban)
+- Code review y mentoring de junior developers
+
+PROYECTOS DESTACADOS:
+- Plataforma de streaming con 50k usuarios concurrentes
+- Dashboard de analytics en tiempo real
+- App móvil de delivery con geolocalización
