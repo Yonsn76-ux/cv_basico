@@ -11,6 +11,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.preprocessing import LabelEncoder
 import joblib
@@ -98,7 +100,7 @@ class CVClassifier:
         
         # Entrenar modelo
         print(f"Entrenando modelo {model_type}...")
-        
+
         if model_type == 'random_forest':
             self.classifier = RandomForestClassifier(
                 n_estimators=100,
@@ -112,9 +114,26 @@ class CVClassifier:
                 max_iter=1000,
                 C=1.0
             )
+        elif model_type == 'svm':
+            self.classifier = SVC(
+                kernel='rbf',
+                random_state=42,
+                probability=True,  # Necesario para predict_proba
+                C=1.0,
+                gamma='scale'
+            )
+        elif model_type == 'naive_bayes':
+            self.classifier = MultinomialNB(
+                alpha=1.0  # Suavizado de Laplace
+            )
         else:
             raise ValueError(f"Tipo de modelo no soportado: {model_type}")
-        
+
+        # Nota: Para SVM y Naive Bayes, asegurar que los datos sean no negativos
+        if model_type in ['svm', 'naive_bayes']:
+            # TF-IDF ya produce valores no negativos, así que está bien
+            pass
+
         self.classifier.fit(X_train, y_train)
         
         # Evaluar modelo
@@ -206,30 +225,57 @@ class CVClassifier:
             }
     
     def save_model(self, model_name='cv_classifier'):
-        """Guarda el modelo entrenado"""
+        """Guarda el modelo entrenado con metadatos"""
         if not self.is_trained:
             raise ValueError("No hay modelo entrenado para guardar")
-        
+
         try:
             # Guardar vectorizador
             vectorizer_path = os.path.join(self.model_dir, f'{model_name}_vectorizer.pkl')
             joblib.dump(self.vectorizer, vectorizer_path)
-            
+
             # Guardar clasificador
             classifier_path = os.path.join(self.model_dir, f'{model_name}_classifier.pkl')
             joblib.dump(self.classifier, classifier_path)
-            
+
             # Guardar codificador de etiquetas
             encoder_path = os.path.join(self.model_dir, f'{model_name}_encoder.pkl')
             joblib.dump(self.label_encoder, encoder_path)
-            
-            print(f"✅ Modelo guardado en {self.model_dir}/")
+
+            # Obtener nombre amigable del algoritmo
+            algorithm_names = {
+                'RandomForestClassifier': 'Random Forest',
+                'LogisticRegression': 'Logistic Regression',
+                'SVC': 'Support Vector Machine (SVM)',
+                'MultinomialNB': 'Naive Bayes'
+            }
+
+            model_type_name = algorithm_names.get(
+                type(self.classifier).__name__,
+                type(self.classifier).__name__
+            )
+
+            # Guardar metadatos del modelo
+            metadata = {
+                'model_name': model_name,
+                'model_type': model_type_name,
+                'professions': list(self.label_encoder.classes_),
+                'num_features': self.vectorizer.max_features,
+                'creation_date': pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'num_professions': len(self.label_encoder.classes_)
+            }
+
+            metadata_path = os.path.join(self.model_dir, f'{model_name}_metadata.pkl')
+            joblib.dump(metadata, metadata_path)
+
+            print(f"✅ Modelo '{model_name}' guardado en {self.model_dir}/")
             print(f"   - {model_name}_vectorizer.pkl")
             print(f"   - {model_name}_classifier.pkl")
             print(f"   - {model_name}_encoder.pkl")
-            
+            print(f"   - {model_name}_metadata.pkl")
+
             return True
-            
+
         except Exception as e:
             print(f"❌ Error guardando modelo: {e}")
             return False
@@ -264,11 +310,97 @@ class CVClassifier:
         """Retorna información sobre el modelo cargado"""
         if not self.is_trained:
             return None
-        
+
+        # Obtener nombre amigable del algoritmo
+        algorithm_names = {
+            'RandomForestClassifier': 'Random Forest',
+            'LogisticRegression': 'Logistic Regression',
+            'SVC': 'Support Vector Machine (SVM)',
+            'MultinomialNB': 'Naive Bayes'
+        }
+
+        model_type_name = algorithm_names.get(
+            type(self.classifier).__name__,
+            type(self.classifier).__name__
+        ) if self.classifier else 'Unknown'
+
         return {
             'is_trained': self.is_trained,
             'professions': list(self.label_encoder.classes_),
             'num_professions': len(self.label_encoder.classes_),
             'num_features': self.vectorizer.max_features if self.vectorizer else 0,
-            'model_type': type(self.classifier).__name__ if self.classifier else 'Unknown'
+            'model_type': model_type_name
         }
+
+    def list_available_models(self):
+        """Lista todos los modelos disponibles en el directorio"""
+        models = []
+
+        if not os.path.exists(self.model_dir):
+            return models
+
+        # Buscar archivos de metadatos
+        for file in os.listdir(self.model_dir):
+            if file.endswith('_metadata.pkl'):
+                model_name = file.replace('_metadata.pkl', '')
+                try:
+                    metadata_path = os.path.join(self.model_dir, file)
+                    metadata = joblib.load(metadata_path)
+
+                    # Verificar que todos los archivos del modelo existen
+                    required_files = [
+                        f'{model_name}_vectorizer.pkl',
+                        f'{model_name}_classifier.pkl',
+                        f'{model_name}_encoder.pkl'
+                    ]
+
+                    all_files_exist = all(
+                        os.path.exists(os.path.join(self.model_dir, f))
+                        for f in required_files
+                    )
+
+                    if all_files_exist:
+                        models.append({
+                            'name': model_name,
+                            'display_name': metadata.get('model_name', model_name),
+                            'model_type': metadata.get('model_type', 'Unknown'),
+                            'professions': metadata.get('professions', []),
+                            'num_professions': metadata.get('num_professions', 0),
+                            'creation_date': metadata.get('creation_date', 'Unknown'),
+                            'num_features': metadata.get('num_features', 0)
+                        })
+
+                except Exception as e:
+                    print(f"Error leyendo metadatos de {model_name}: {e}")
+                    continue
+
+        return sorted(models, key=lambda x: x['creation_date'], reverse=True)
+
+    def delete_model(self, model_name):
+        """Elimina un modelo y todos sus archivos"""
+        try:
+            files_to_delete = [
+                f'{model_name}_vectorizer.pkl',
+                f'{model_name}_classifier.pkl',
+                f'{model_name}_encoder.pkl',
+                f'{model_name}_metadata.pkl'
+            ]
+
+            deleted_files = []
+            for file in files_to_delete:
+                file_path = os.path.join(self.model_dir, file)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    deleted_files.append(file)
+
+            if deleted_files:
+                print(f"✅ Modelo '{model_name}' eliminado")
+                print(f"   Archivos eliminados: {len(deleted_files)}")
+                return True
+            else:
+                print(f"⚠️ No se encontraron archivos para el modelo '{model_name}'")
+                return False
+
+        except Exception as e:
+            print(f"❌ Error eliminando modelo '{model_name}': {e}")
+            return False
