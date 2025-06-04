@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Interfaz gráfica principal para el Clasificador de CVs por Profesiones
-Versión con diseño inspirado en Google/.
+Versión con diseño inspirado en Visual Studio Code (VSCode).
 """
 
 import sys
@@ -158,7 +158,7 @@ class CustomTitleBar(QWidget):
         pixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setBrush(QColor("#4285F4")) # Azul Google
+        painter.setBrush(QColor("#D1001F")) # Rojo Driver Booster
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawEllipse(0, 0, 22, 22)
         painter.end()
@@ -258,8 +258,8 @@ class CVClassifierGUI(QMainWindow):
         self.current_loaded_model = None
         self.current_model_is_dl = False
 
-        # Indicador de tema oscuro
-        self.dark_mode = False
+        # Indicador de tema oscuro. Por defecto estilo oscuro al estilo Driver Booster
+        self.dark_mode = True
 
         self.init_ui()
         self.load_model_if_exists()
@@ -271,51 +271,50 @@ class CVClassifierGUI(QMainWindow):
 
     def get_stylesheet(self, dark=False):
         """Retorna la hoja de estilos en modo claro u oscuro"""
-        # Paleta de colores inspirada en Google Material Design
-        GOOGLE_BLUE = "#4285F4" 
-        GOOGLE_BLUE_DARK = "#3367D6"
-        GOOGLE_GREEN = "#34A853"
-        GOOGLE_GREEN_DARK = "#1E8E3E"
-        GOOGLE_YELLOW = "#FBBC05"
-        GOOGLE_YELLOW_DARK = "#F9AB00" # Para texto oscuro sobre amarillo
-        GOOGLE_RED = "#EA4335"
-        GOOGLE_RED_DARK = "#C5221F"
+        # Paleta de colores inspirada en Driver Booster
+        GOOGLE_BLUE = "#D1001F"  # rojo principal
+        GOOGLE_BLUE_DARK = "#9A0016"
+        GOOGLE_GREEN = "#4CAF50"
+        GOOGLE_GREEN_DARK = "#388E3C"
+        GOOGLE_YELLOW = "#FFCA28"
+        GOOGLE_YELLOW_DARK = "#FFA000"
+        GOOGLE_RED = "#EF5350"
+        GOOGLE_RED_DARK = "#D32F2F"
 
-        GREY_900 = "#202124" # Texto principal oscuro
-        GREY_800 = "#3c4043" # Texto secundario
-        GREY_700 = "#5f6368" # Bordes, iconos
-        GREY_600 = "#80868b"
-        GREY_500 = "#9aa0a6"
-        GREY_400 = "#bdc1c6"
-        GREY_300 = "#dadce0" # Bordes sutiles, fondos de input
-        GREY_200 = "#e8eaed" # Fondos de hover
-        GREY_100 = "#f1f3f4" # Fondo de la aplicación, fondos de sección
-        GREY_50 = "#f8f9fa"  # Fondos más claros
+        GREY_900 = "#FFFFFF"  # Texto principal claro
+        GREY_800 = "#E0E0E0"  # Texto secundario
+        GREY_700 = "#BDBDBD"  # Bordes, iconos
+        GREY_600 = "#9E9E9E"
+        GREY_500 = "#757575"
+        GREY_400 = "#616161"
+        GREY_300 = "#424242"  # Bordes sutiles, fondos de input
+        GREY_200 = "#303030"  # Fondos de hover
+        GREY_100 = "#212121"  # Paneles
+        GREY_50 = "#121212"   # Fondo principal
 
-        WHITE = "#ffffff"
+        WHITE = "#FFFFFF"
         BLACK = "#000000"
-        
-        # Valores por defecto para modo claro
-        _BACKGROUND = GREY_50  # Fondo principal muy claro
-        _SURFACE = WHITE       # Superficies de tarjetas, diálogos
-        _TEXT_PRIMARY = GREY_900
-        _TEXT_SECONDARY = GREY_800
+
+        # Valores por defecto para modo claro (estilo Driver Booster)
+        _BACKGROUND = WHITE
+        _SURFACE = GREY_100
+        _TEXT_PRIMARY = GREY_800
+        _TEXT_SECONDARY = GREY_700
         _PRIMARY_ACCENT = GOOGLE_BLUE
         _PRIMARY_ACCENT_HOVER = GOOGLE_BLUE_DARK
 
-        CONSOLE_BG = "#1e1e1e"  # Fondo oscuro para consolas/logs
-        CONSOLE_TEXT = "#d4d4d4"  # Texto claro para consolas
+        CONSOLE_BG = "#F3F3F3"
+        CONSOLE_TEXT = "#333333"
 
         if dark:
-            # Ajustes básicos para modo oscuro
-            _BACKGROUND = "#303134"
-            _SURFACE = "#3c4043"
-            _TEXT_PRIMARY = "#e8eaed"
-            _TEXT_SECONDARY = "#bdc1c6"
+            _BACKGROUND = GREY_50
+            _SURFACE = GREY_100
+            _TEXT_PRIMARY = GREY_900
+            _TEXT_SECONDARY = GREY_800
             _PRIMARY_ACCENT = GOOGLE_BLUE
             _PRIMARY_ACCENT_HOVER = GOOGLE_BLUE_DARK
-            CONSOLE_BG = "#000000"
-            CONSOLE_TEXT = "#d4d4d4"
+            CONSOLE_BG = "#1E1E1E"
+            CONSOLE_TEXT = "#D4D4D4"
 
         # Hoja de estilos QSS
         return f"""
@@ -389,21 +388,22 @@ class CVClassifierGUI(QMainWindow):
             QTabBar::tab {{
                 background: transparent;
                 border: none;
-                border-bottom: 3px solid transparent; 
-                padding: 10px 18px;
-                margin-right: 4px; /* Espacio entre pestañas */
+                border-left: 4px solid transparent;
+                padding: 12px 20px;
+                margin-bottom: 4px; /* Espacio entre pestañas verticales */
                 color: {_TEXT_SECONDARY};
                 font-weight: 500; /* Medium */
                 font-size: 10.5pt;
             }}
             QTabBar::tab:selected {{
                 color: {_PRIMARY_ACCENT};
-                border-bottom: 3px solid {_PRIMARY_ACCENT};
+                background-color: {GREY_50};
+                border-left: 4px solid {_PRIMARY_ACCENT};
             }}
             QTabBar::tab:!selected:hover {{
                 color: {_TEXT_PRIMARY};
-                background-color: {GREY_200}; /* Sutil hover */
-                border-bottom: 3px solid {GREY_200};
+                background-color: {GREY_100}; /* Sutil hover */
+                border-left: 4px solid {GREY_100};
             }}
 
             QGroupBox {{
@@ -448,15 +448,25 @@ class CVClassifierGUI(QMainWindow):
                 border-color: {GREY_200};
             }}
 
-            QPushButton#btn_classify, QPushButton#btn_save_current_model, 
-            QPushButton#btn_load_selected_model, QPushButton#btn_load_model,
-            QPushButton#btn_add_profession, QPushButton#btn_dl_add_profession,
-            QPushButton#btn_train, QPushButton#btn_dl_train {{
+            QPushButton#btn_classify {
                 background-color: {_PRIMARY_ACCENT};
                 color: {WHITE};
                 border: none;
-            }}
-            QPushButton#btn_classify:hover, QPushButton#btn_save_current_model:hover,
+                border-radius: 70px;
+                min-width: 140px;
+                min-height: 140px;
+                font-size: 14pt;
+            }
+            QPushButton#btn_save_current_model,
+            QPushButton#btn_load_selected_model, QPushButton#btn_load_model,
+            QPushButton#btn_add_profession, QPushButton#btn_dl_add_profession,
+            QPushButton#btn_train, QPushButton#btn_dl_train {
+                background-color: {_PRIMARY_ACCENT};
+                color: {WHITE};
+                border: none;
+            }
+            QPushButton#btn_classify:hover,
+            QPushButton#btn_save_current_model:hover,
             QPushButton#btn_load_selected_model:hover, QPushButton#btn_load_model:hover,
             QPushButton#btn_add_profession:hover, QPushButton#btn_dl_add_profession:hover,
             QPushButton#btn_train:hover, QPushButton#btn_dl_train:hover {{
@@ -965,6 +975,7 @@ class CVClassifierGUI(QMainWindow):
     def create_tabs(self, layout):
         tabs = QTabWidget()
         tabs.setObjectName("main_tab_widget")
+        tabs.setTabPosition(QTabWidget.TabPosition.West)
 
         training_tab = QWidget()
         training_tab.setObjectName("training_tab_content")
@@ -1398,12 +1409,12 @@ class CVClassifierGUI(QMainWindow):
         self.btn_select_cv.clicked.connect(self.select_cv_file)
         cv_layout.addWidget(self.btn_select_cv, 1, 1)
         
-        self.btn_classify = QPushButton("🎯 Clasificar CV Seleccionado")
+        self.btn_classify = QPushButton("Escanear CV")
         self.btn_classify.setObjectName("btn_classify")
         self.btn_classify.clicked.connect(self.classify_cv)
         self.btn_classify.setEnabled(False)
-        self.btn_classify.setFixedHeight(40) # Botón más prominente
-        cv_layout.addWidget(self.btn_classify, 1, 2)
+        self.btn_classify.setFixedSize(140, 140)  # Botón circular estilo Driver Booster
+        cv_layout.addWidget(self.btn_classify, 1, 2, Qt.AlignmentFlag.AlignCenter)
         
         layout.addWidget(cv_group)
 
@@ -2311,17 +2322,17 @@ class CVProcessor:
             f.write("""
 class Settings:
     MODEL_DIR = "cv_models_storage_" 
-    # Colores de Google para consistencia (opcional, pero útil si se usan en lógica)
-    GOOGLE_BLUE = "#4285F4" 
-    GOOGLE_GREEN = "#34A853"
-    GOOGLE_YELLOW = "#FBBC05"
-    GOOGLE_YELLOW_DARK = "#F9AB00"
-    GOOGLE_RED = "#EA4335"
-    GREY_900 = "#202124"
-    GREY_700 = "#5f6368"
-    GREY_400 = "#bdc1c6"
-    GREY_100 = "#f1f3f4"
-    GREY_50 = "#f8f9fa"
+    # Colores inspirados en Driver Booster
+    GOOGLE_BLUE = "#D1001F"
+    GOOGLE_GREEN = "#4CAF50"
+    GOOGLE_YELLOW = "#FFCA28"
+    GOOGLE_YELLOW_DARK = "#FFA000"
+    GOOGLE_RED = "#EF5350"
+    GREY_900 = "#FFFFFF"
+    GREY_700 = "#BDBDBD"
+    GREY_400 = "#616161"
+    GREY_100 = "#212121"
+    GREY_50 = "#121212"
 """)
     # Crear directorio de modelos si no existe
     # Esto debe hacerse después de que Settings se haya importado y MODEL_DIR esté definido
