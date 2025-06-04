@@ -15,9 +15,57 @@ import pandas as pd
 
 class CVProcessor:
     """Procesador simplificado de CVs"""
-    
-    def __init__(self):
+
+    DEFAULT_SKILL_KEYWORDS = [
+        # Tecnología
+        'python', 'java', 'javascript', 'sql', 'html', 'css', 'react', 'angular',
+        'node.js', 'php', 'c++', 'c#', '.net', 'spring', 'django', 'flask',
+        'git', 'docker', 'kubernetes', 'aws', 'azure', 'linux', 'windows',
+
+        # Data Science
+        'machine learning', 'deep learning', 'tensorflow', 'pytorch', 'pandas',
+        'numpy', 'scikit-learn', 'tableau', 'power bi', 'excel', 'r',
+        'statistics', 'data analysis', 'big data', 'hadoop', 'spark',
+
+        # Marketing
+        'marketing digital', 'seo', 'sem', 'google ads', 'facebook ads',
+        'social media', 'content marketing', 'email marketing', 'analytics',
+        'photoshop', 'illustrator', 'canva', 'hootsuite',
+
+        # Diseño
+        'diseño gráfico', 'ui/ux', 'figma', 'sketch', 'adobe creative',
+        'after effects', 'premiere', 'indesign', 'branding', 'tipografía',
+
+        # Ventas
+        'ventas', 'sales', 'crm', 'salesforce', 'negociación', 'prospección',
+        'atención al cliente', 'customer service', 'retail',
+
+        # Administración
+        'administración', 'gestión', 'management', 'liderazgo', 'proyectos',
+        'planificación', 'presupuestos', 'finanzas', 'contabilidad', 'rrhh',
+
+        # Agricultura
+        'agricultura', 'agronomía', 'cultivos', 'riego', 'fertilizantes',
+        'pesticidas', 'maquinaria agrícola', 'ganadería', 'veterinaria',
+        'producción agrícola', 'agropecuario', 'campo'
+    ]
+
+    def __init__(self, skill_keywords=None):
+        """Inicializa el procesador.
+
+        Parameters
+        ----------
+        skill_keywords : list[str] or None
+            Lista de palabras clave para detectar habilidades en el texto. Si se
+            pasa ``None`` se usa la lista por defecto. Una lista vacía desactiva
+            la detección de habilidades.
+        """
         self.supported_formats = ['.pdf', '.docx', '.doc', '.jpg', '.jpeg', '.png', '.bmp', '.tiff']
+        # Permitir personalizar las keywords de habilidades o deshabilitarlas
+        if skill_keywords is None:
+            self.skill_keywords = self.DEFAULT_SKILL_KEYWORDS
+        else:
+            self.skill_keywords = skill_keywords
     
     def extract_text_from_file(self, file_path):
         """Extrae texto de un archivo según su formato"""
@@ -151,42 +199,8 @@ class CVProcessor:
             if keyword in text:
                 features['education_keywords'].append(keyword)
         
-        # Keywords de habilidades por profesión
-        skill_keywords = [
-            # Tecnología
-            'python', 'java', 'javascript', 'sql', 'html', 'css', 'react', 'angular',
-            'node.js', 'php', 'c++', 'c#', '.net', 'spring', 'django', 'flask',
-            'git', 'docker', 'kubernetes', 'aws', 'azure', 'linux', 'windows',
-            
-            # Data Science
-            'machine learning', 'deep learning', 'tensorflow', 'pytorch', 'pandas',
-            'numpy', 'scikit-learn', 'tableau', 'power bi', 'excel', 'r',
-            'statistics', 'data analysis', 'big data', 'hadoop', 'spark',
-            
-            # Marketing
-            'marketing digital', 'seo', 'sem', 'google ads', 'facebook ads',
-            'social media', 'content marketing', 'email marketing', 'analytics',
-            'photoshop', 'illustrator', 'canva', 'hootsuite',
-            
-            # Diseño
-            'diseño gráfico', 'ui/ux', 'figma', 'sketch', 'adobe creative',
-            'after effects', 'premiere', 'indesign', 'branding', 'tipografía',
-            
-            # Ventas
-            'ventas', 'sales', 'crm', 'salesforce', 'negociación', 'prospección',
-            'atención al cliente', 'customer service', 'retail',
-            
-            # Administración
-            'administración', 'gestión', 'management', 'liderazgo', 'proyectos',
-            'planificación', 'presupuestos', 'finanzas', 'contabilidad', 'rrhh',
-            
-            # Agricultura
-            'agricultura', 'agronomía', 'cultivos', 'riego', 'fertilizantes',
-            'pesticidas', 'maquinaria agrícola', 'ganadería', 'veterinaria',
-            'producción agrícola', 'agropecuario', 'campo'
-        ]
-        
-        for skill in skill_keywords:
+        # Keywords de habilidades
+        for skill in self.skill_keywords:
             if skill in text:
                 features['skills'].append(skill)
         
