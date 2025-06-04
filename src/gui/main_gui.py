@@ -448,7 +448,7 @@ class CVClassifierGUI(QMainWindow):
                 border-color: {GREY_200};
             }}
 
-            QPushButton#btn_classify {
+            QPushButton#btn_classify {{
                 background-color: {_PRIMARY_ACCENT};
                 color: {WHITE};
                 border: none;
@@ -456,22 +456,22 @@ class CVClassifierGUI(QMainWindow):
                 min-width: 140px;
                 min-height: 140px;
                 font-size: 14pt;
-            }
+            }}
             QPushButton#btn_save_current_model,
             QPushButton#btn_load_selected_model, QPushButton#btn_load_model,
             QPushButton#btn_add_profession, QPushButton#btn_dl_add_profession,
-            QPushButton#btn_train, QPushButton#btn_dl_train {
+            QPushButton#btn_train, QPushButton#btn_dl_train {{
                 background-color: {_PRIMARY_ACCENT};
                 color: {WHITE};
                 border: none;
-            }
+            }}
             QPushButton#btn_classify:hover,
             QPushButton#btn_save_current_model:hover,
             QPushButton#btn_load_selected_model:hover, QPushButton#btn_load_model:hover,
             QPushButton#btn_add_profession:hover, QPushButton#btn_dl_add_profession:hover,
-            QPushButton#btn_train:hover, QPushButton#btn_dl_train:hover {
+            QPushButton#btn_train:hover, QPushButton#btn_dl_train:hover {{
                 background-color: {_PRIMARY_ACCENT_HOVER};
-            }
+            }}
             
             QPushButton#btn_delete_model {{
                 background-color: {GOOGLE_RED};
