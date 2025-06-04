@@ -144,10 +144,10 @@ class CustomTitleBar(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent_window = parent
-        self.setFixedHeight(40) # Altura de la barra de título
-        
+        self.setFixedHeight(40)  # Altura de la barra de título
+
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(10, 0, 5, 0) # Márgenes ajustados
+        layout.setContentsMargins(10, 0, 10, 0)  # Márgenes ajustados
         layout.setSpacing(10)
 
         # Icono de la aplicación (opcional)
@@ -158,37 +158,47 @@ class CustomTitleBar(QWidget):
         pixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setBrush(QColor("#4285F4")) # Azul Google
+        painter.setBrush(QColor("#4285F4"))  # Azul Google
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawEllipse(0, 0, 22, 22)
         painter.end()
         icon_label.setPixmap(pixmap)
         layout.addWidget(icon_label)
 
+        layout.addStretch(1)
+
         self.title_label = QLabel("🎯 Clasificador de CVs ")
         self.title_label.setObjectName("custom_title_label")
+        self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.title_label)
 
-        layout.addStretch()
+        layout.addStretch(1)
 
         # Botones de la ventana (Minimizar, Maximizar, Cerrar)
         self.minimize_button = QPushButton("—")
         self.minimize_button.setObjectName("window_button")
-        self.minimize_button.setFixedSize(30, 30)
+        self.minimize_button.setFixedSize(28, 28)
         self.minimize_button.clicked.connect(self.parent_window.showMinimized)
-        layout.addWidget(self.minimize_button)
 
-        self.maximize_button = QPushButton("□") # Podría cambiar a un icono de maximizar/restaurar
+        self.maximize_button = QPushButton("□")  # Podría cambiar a un icono de maximizar/restaurar
         self.maximize_button.setObjectName("window_button")
-        self.maximize_button.setFixedSize(30, 30)
+        self.maximize_button.setFixedSize(28, 28)
         self.maximize_button.clicked.connect(self.toggle_maximize_restore)
-        layout.addWidget(self.maximize_button)
 
         self.close_button = QPushButton("✕")
         self.close_button.setObjectName("window_button_close")
-        self.close_button.setFixedSize(30, 30)
+        self.close_button.setFixedSize(28, 28)
         self.close_button.clicked.connect(self.parent_window.close)
-        layout.addWidget(self.close_button)
+
+        buttons_container = QWidget()
+        buttons_layout = QHBoxLayout(buttons_container)
+        buttons_layout.setContentsMargins(0, 0, 0, 0)
+        buttons_layout.setSpacing(6)
+        buttons_layout.addWidget(self.minimize_button)
+        buttons_layout.addWidget(self.maximize_button)
+        buttons_layout.addWidget(self.close_button)
+
+        layout.addWidget(buttons_container)
 
         self.mouse_pressed = False
         self.drag_position = None
@@ -326,19 +336,23 @@ class CVClassifierGUI(QMainWindow):
                 font-weight: 500; /* Medium weight */
             }}
             QPushButton#window_button, QPushButton#window_button_close {{
-                background-color: transparent;
-                border: none;
-                color: {GREY_700};
-                font-size: 12pt;
+                background-color: {GREY_200};
+                border: 1px solid {GREY_300};
+                border-radius: 6px;
+                color: {_TEXT_PRIMARY};
+                font-size: 11pt;
                 font-weight: bold;
             }}
             QPushButton#window_button:hover {{
-                background-color: {GREY_200};
-                color: {GREY_900};
+                background-color: {GREY_300};
+            }}
+            QPushButton#window_button_close {{
+                background-color: {GOOGLE_RED};
+                border-color: {GOOGLE_RED_DARK};
+                color: {WHITE};
             }}
             QPushButton#window_button_close:hover {{
-                background-color: #fddddd; /* Rojo muy claro para cerrar */
-                color: {GOOGLE_RED};
+                background-color: {GOOGLE_RED_DARK};
             }}
 
 
