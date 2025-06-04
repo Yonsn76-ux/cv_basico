@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Interfaz gráfica principal para el Clasificador de CVs por Profesiones
-Versión con diseño inspirado en Google/.
+Versión con diseño inspirado en Visual Studio Code.
 """
 
 import sys
@@ -158,7 +158,7 @@ class CustomTitleBar(QWidget):
         pixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setBrush(QColor("#4285F4")) # Azul Google
+        painter.setBrush(QColor("#007ACC")) # Azul VSCode
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawEllipse(0, 0, 22, 22)
         painter.end()
@@ -258,8 +258,8 @@ class CVClassifierGUI(QMainWindow):
         self.current_loaded_model = None
         self.current_model_is_dl = False
 
-        # Indicador de tema oscuro
-        self.dark_mode = False
+        # Indicador de tema oscuro. Por defecto estilo oscuro al estilo VSCode
+        self.dark_mode = True
 
         self.init_ui()
         self.load_model_if_exists()
@@ -271,51 +271,50 @@ class CVClassifierGUI(QMainWindow):
 
     def get_stylesheet(self, dark=False):
         """Retorna la hoja de estilos en modo claro u oscuro"""
-        # Paleta de colores inspirada en Google Material Design
-        GOOGLE_BLUE = "#4285F4" 
-        GOOGLE_BLUE_DARK = "#3367D6"
-        GOOGLE_GREEN = "#34A853"
-        GOOGLE_GREEN_DARK = "#1E8E3E"
-        GOOGLE_YELLOW = "#FBBC05"
-        GOOGLE_YELLOW_DARK = "#F9AB00" # Para texto oscuro sobre amarillo
-        GOOGLE_RED = "#EA4335"
-        GOOGLE_RED_DARK = "#C5221F"
+        # Paleta de colores inspirada en Visual Studio Code
+        GOOGLE_BLUE = "#007ACC"
+        GOOGLE_BLUE_DARK = "#0E639C"
+        GOOGLE_GREEN = "#16C60C"
+        GOOGLE_GREEN_DARK = "#13A10E"
+        GOOGLE_YELLOW = "#D7BA7D"
+        GOOGLE_YELLOW_DARK = "#C4A000"
+        GOOGLE_RED = "#F14C4C"
+        GOOGLE_RED_DARK = "#D16969"
 
-        GREY_900 = "#202124" # Texto principal oscuro
-        GREY_800 = "#3c4043" # Texto secundario
-        GREY_700 = "#5f6368" # Bordes, iconos
-        GREY_600 = "#80868b"
-        GREY_500 = "#9aa0a6"
-        GREY_400 = "#bdc1c6"
-        GREY_300 = "#dadce0" # Bordes sutiles, fondos de input
-        GREY_200 = "#e8eaed" # Fondos de hover
-        GREY_100 = "#f1f3f4" # Fondo de la aplicación, fondos de sección
-        GREY_50 = "#f8f9fa"  # Fondos más claros
+        GREY_900 = "#D4D4D4"  # Texto principal claro
+        GREY_800 = "#C6C6C6"  # Texto secundario
+        GREY_700 = "#AAAAAA"  # Bordes, iconos
+        GREY_600 = "#999999"
+        GREY_500 = "#808080"
+        GREY_400 = "#646464"
+        GREY_300 = "#3C3C3C"  # Bordes sutiles, fondos de input
+        GREY_200 = "#333333"  # Fondos de hover
+        GREY_100 = "#252526"  # Paneles
+        GREY_50 = "#1E1E1E"   # Fondo principal
 
-        WHITE = "#ffffff"
+        WHITE = "#FFFFFF"
         BLACK = "#000000"
-        
-        # Valores por defecto para modo claro
-        _BACKGROUND = GREY_50  # Fondo principal muy claro
-        _SURFACE = WHITE       # Superficies de tarjetas, diálogos
-        _TEXT_PRIMARY = GREY_900
-        _TEXT_SECONDARY = GREY_800
+
+        # Valores por defecto para modo claro (inspirado en tema claro VSCode)
+        _BACKGROUND = WHITE
+        _SURFACE = GREY_100
+        _TEXT_PRIMARY = GREY_800
+        _TEXT_SECONDARY = GREY_700
         _PRIMARY_ACCENT = GOOGLE_BLUE
         _PRIMARY_ACCENT_HOVER = GOOGLE_BLUE_DARK
 
-        CONSOLE_BG = "#1e1e1e"  # Fondo oscuro para consolas/logs
-        CONSOLE_TEXT = "#d4d4d4"  # Texto claro para consolas
+        CONSOLE_BG = "#F3F3F3"
+        CONSOLE_TEXT = "#333333"
 
         if dark:
-            # Ajustes básicos para modo oscuro
-            _BACKGROUND = "#303134"
-            _SURFACE = "#3c4043"
-            _TEXT_PRIMARY = "#e8eaed"
-            _TEXT_SECONDARY = "#bdc1c6"
+            _BACKGROUND = GREY_50
+            _SURFACE = GREY_100
+            _TEXT_PRIMARY = GREY_900
+            _TEXT_SECONDARY = GREY_800
             _PRIMARY_ACCENT = GOOGLE_BLUE
             _PRIMARY_ACCENT_HOVER = GOOGLE_BLUE_DARK
-            CONSOLE_BG = "#000000"
-            CONSOLE_TEXT = "#d4d4d4"
+            CONSOLE_BG = "#1E1E1E"
+            CONSOLE_TEXT = "#D4D4D4"
 
         # Hoja de estilos QSS
         return f"""
@@ -2311,17 +2310,17 @@ class CVProcessor:
             f.write("""
 class Settings:
     MODEL_DIR = "cv_models_storage_" 
-    # Colores de Google para consistencia (opcional, pero útil si se usan en lógica)
-    GOOGLE_BLUE = "#4285F4" 
-    GOOGLE_GREEN = "#34A853"
-    GOOGLE_YELLOW = "#FBBC05"
-    GOOGLE_YELLOW_DARK = "#F9AB00"
-    GOOGLE_RED = "#EA4335"
-    GREY_900 = "#202124"
-    GREY_700 = "#5f6368"
-    GREY_400 = "#bdc1c6"
-    GREY_100 = "#f1f3f4"
-    GREY_50 = "#f8f9fa"
+    # Colores inspirados en Visual Studio Code
+    GOOGLE_BLUE = "#007ACC"
+    GOOGLE_GREEN = "#16C60C"
+    GOOGLE_YELLOW = "#D7BA7D"
+    GOOGLE_YELLOW_DARK = "#C4A000"
+    GOOGLE_RED = "#F14C4C"
+    GREY_900 = "#D4D4D4"
+    GREY_700 = "#AAAAAA"
+    GREY_400 = "#646464"
+    GREY_100 = "#252526"
+    GREY_50 = "#1E1E1E"
 """)
     # Crear directorio de modelos si no existe
     # Esto debe hacerse después de que Settings se haya importado y MODEL_DIR esté definido
