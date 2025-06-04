@@ -144,10 +144,10 @@ class CustomTitleBar(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent_window = parent
-        self.setFixedHeight(40) # Altura de la barra de título
-        
+        self.setFixedHeight(40)  # Altura de la barra de título
+
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(10, 0, 5, 0) # Márgenes ajustados
+        layout.setContentsMargins(10, 0, 5, 0)  # Márgenes ajustados
         layout.setSpacing(10)
 
         # Icono de la aplicación (opcional)
@@ -170,6 +170,13 @@ class CustomTitleBar(QWidget):
         layout.addWidget(self.title_label)
 
         layout.addStretch()
+
+        # Botón para cambiar tema claro/oscuro
+        self.theme_button = QPushButton("🌙")
+        self.theme_button.setObjectName("window_button")
+        self.theme_button.setFixedSize(30, 30)
+        self.theme_button.clicked.connect(self.parent_window.toggle_theme)
+        layout.addWidget(self.theme_button)
 
         # Botones de la ventana (Minimizar, Maximizar, Cerrar)
         self.minimize_button = QPushButton("—")
@@ -250,17 +257,21 @@ class CVClassifierGUI(QMainWindow):
 
         self.current_loaded_model = None
         self.current_model_is_dl = False
-        
+
+        # Indicador de tema oscuro
+        self.dark_mode = False
+
         self.init_ui()
-        self.load_model_if_exists() 
+        self.load_model_if_exists()
 
         self.refresh_models_list()
         self.refresh_model_selector()
         self.update_save_model_ui() 
         self.update_classification_ui() 
 
-    def get_modern_stylesheet(self):
-        # Paleta de colores inspirada en Google Material Design / 
+    def get_stylesheet(self, dark=False):
+        """Retorna la hoja de estilos en modo claro u oscuro"""
+        # Paleta de colores inspirada en Google Material Design
         GOOGLE_BLUE = "#4285F4" 
         GOOGLE_BLUE_DARK = "#3367D6"
         GOOGLE_GREEN = "#34A853"
@@ -284,16 +295,27 @@ class CVClassifierGUI(QMainWindow):
         WHITE = "#ffffff"
         BLACK = "#000000"
         
-        # Colores específicos para la interfaz -like
-        _BACKGROUND = GREY_50 # Fondo principal muy claro
-        _SURFACE = WHITE      # Superficies de tarjetas, diálogos
+        # Valores por defecto para modo claro
+        _BACKGROUND = GREY_50  # Fondo principal muy claro
+        _SURFACE = WHITE       # Superficies de tarjetas, diálogos
         _TEXT_PRIMARY = GREY_900
         _TEXT_SECONDARY = GREY_800
-        _PRIMARY_ACCENT = GOOGLE_BLUE # Color de acento principal
+        _PRIMARY_ACCENT = GOOGLE_BLUE
         _PRIMARY_ACCENT_HOVER = GOOGLE_BLUE_DARK
 
-        CONSOLE_BG = "#1e1e1e" # Fondo oscuro para consolas/logs
-        CONSOLE_TEXT = "#d4d4d4" # Texto claro para consolas
+        CONSOLE_BG = "#1e1e1e"  # Fondo oscuro para consolas/logs
+        CONSOLE_TEXT = "#d4d4d4"  # Texto claro para consolas
+
+        if dark:
+            # Ajustes básicos para modo oscuro
+            _BACKGROUND = "#303134"
+            _SURFACE = "#3c4043"
+            _TEXT_PRIMARY = "#e8eaed"
+            _TEXT_SECONDARY = "#bdc1c6"
+            _PRIMARY_ACCENT = GOOGLE_BLUE
+            _PRIMARY_ACCENT_HOVER = GOOGLE_BLUE_DARK
+            CONSOLE_BG = "#000000"
+            CONSOLE_TEXT = "#d4d4d4"
 
         # Hoja de estilos QSS
         return f"""
@@ -704,9 +726,9 @@ class CVClassifierGUI(QMainWindow):
         content_layout.setSpacing(18) 
         content_layout.setContentsMargins(20, 15, 20, 20) # Ajustar márgenes debajo de la barra de título
 
-        # Aplicar la hoja de estilos
+        # Aplicar la hoja de estilos inicial
         # Es importante aplicarla al QMainWindow para que CustomTitleBar herede estilos
-        self.setStyleSheet(self.get_modern_stylesheet()) 
+        self.apply_stylesheet()
 
         # El QScrollArea ahora va dentro del content_widget
         scroll_area = QScrollArea()
@@ -743,8 +765,19 @@ class CVClassifierGUI(QMainWindow):
         window_rect.moveCenter(screen.center())
         self.move(window_rect.topLeft())
 
-    def get_modern_stylesheet(self):
-        """Retorna el stylesheet moderno para la aplicación"""
+    def apply_stylesheet(self):
+        """Aplica la hoja de estilos según el modo actual"""
+        self.setStyleSheet(self.get_stylesheet(self.dark_mode))
+        if hasattr(self, "title_bar"):
+            self.title_bar.theme_button.setText("☀️" if self.dark_mode else "🌙")
+
+    def toggle_theme(self):
+        """Alterna entre modo claro y oscuro"""
+        self.dark_mode = not self.dark_mode
+        self.apply_stylesheet()
+
+    def get_basic_stylesheet(self):
+        """Hoja de estilos simplificada (no utilizada actualmente)"""
         return """
         QMainWindow {
             background-color: #f8f9fa;
