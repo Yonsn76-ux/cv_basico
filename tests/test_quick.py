@@ -5,6 +5,21 @@ Prueba rápida del sistema de clasificación de CVs
 """
 
 import os
+import pytest
+
+# Skip tests if required dependencies are missing
+for pkg in [
+    "pandas",
+    "numpy",
+    "sklearn",
+    "PyPDF2",
+    "cv2",
+    "pytesseract",
+    "docx",
+    "PIL",
+]:
+    pytest.importorskip(pkg)
+
 from cv_processor import CVProcessor
 from cv_classifier import CVClassifier
 
@@ -92,20 +107,20 @@ def test_basic_functionality():
 def test_gui_imports():
     """Prueba las importaciones de la GUI"""
     print("\n🖥️ Probando importaciones de la GUI...")
-    
     try:
+        pytest.importorskip("PyQt6")
         from PyQt6.QtWidgets import QApplication
         print("   ✅ PyQt6.QtWidgets")
-        
+
         from PyQt6.QtCore import Qt
         print("   ✅ PyQt6.QtCore")
-        
+
         from PyQt6.QtGui import QFont, QColor
         print("   ✅ PyQt6.QtGui")
-        
+
         print("   ✅ Todas las importaciones de GUI exitosas")
         return True
-        
+
     except ImportError as e:
         print(f"   ❌ Error en importaciones: {e}")
         return False

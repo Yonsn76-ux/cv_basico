@@ -5,7 +5,21 @@ Prueba la integración de modelos tradicionales y Deep Learning
 
 import sys
 import os
+import pytest
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+# Skip if ML dependencies are missing
+for pkg in [
+    "pandas",
+    "numpy",
+    "sklearn",
+    "PyPDF2",
+    "cv2",
+    "pytesseract",
+    "docx",
+    "PIL",
+]:
+    pytest.importorskip(pkg)
 
 def test_model_listing():
     """Prueba que se listen ambos tipos de modelos"""

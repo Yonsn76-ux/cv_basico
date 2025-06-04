@@ -5,6 +5,21 @@ Prueba todos los algoritmos de machine learning disponibles
 
 import os
 import time
+import pytest
+
+# Skip tests if required ML dependencies are missing
+for pkg in [
+    "pandas",
+    "numpy",
+    "sklearn",
+    "PyPDF2",
+    "cv2",
+    "pytesseract",
+    "docx",
+    "PIL",
+]:
+    pytest.importorskip(pkg)
+
 from cv_classifier import CVClassifier
 from cv_processor import CVProcessor
 

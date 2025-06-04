@@ -5,6 +5,11 @@ Prueba específica para verificar que los algoritmos funcionan en la GUI
 
 import sys
 import os
+import pytest
+
+# Skip tests if PyQt6 is not available in the environment
+pytest.importorskip("PyQt6")
+
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
 from main_gui import CVClassifierGUI

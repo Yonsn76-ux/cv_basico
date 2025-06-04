@@ -5,6 +5,12 @@ Prueba la funcionalidad de Deep Learning (sin entrenar modelos reales)
 
 import os
 import sys
+import pytest
+
+# Skip tests that require optional dependencies when not available
+pytest.importorskip("PyQt6")
+pytest.importorskip("tensorflow")
+pytest.importorskip("transformers")
 
 def test_deep_learning_imports():
     """Prueba las importaciones de Deep Learning"""
