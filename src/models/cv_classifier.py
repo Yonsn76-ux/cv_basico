@@ -333,68 +333,138 @@ class CVClassifier:
         }
 
     def list_available_models(self):
-        """Lista todos los modelos disponibles en el directorio"""
+        """Lista todos los modelos disponibles (tradicionales y Deep Learning)"""
         models = []
 
-        if not os.path.exists(self.model_dir):
-            return models
+        # Modelos tradicionales
+        if os.path.exists(self.model_dir):
+            # Buscar archivos de metadatos tradicionales
+            for file in os.listdir(self.model_dir):
+                if file.endswith('_metadata.pkl'):
+                    model_name = file.replace('_metadata.pkl', '')
+                    try:
+                        metadata_path = os.path.join(self.model_dir, file)
+                        metadata = joblib.load(metadata_path)
 
-        # Buscar archivos de metadatos
-        for file in os.listdir(self.model_dir):
-            if file.endswith('_metadata.pkl'):
-                model_name = file.replace('_metadata.pkl', '')
-                try:
-                    metadata_path = os.path.join(self.model_dir, file)
-                    metadata = joblib.load(metadata_path)
+                        # Verificar que todos los archivos del modelo existen
+                        required_files = [
+                            f'{model_name}_vectorizer.pkl',
+                            f'{model_name}_classifier.pkl',
+                            f'{model_name}_encoder.pkl'
+                        ]
 
-                    # Verificar que todos los archivos del modelo existen
-                    required_files = [
-                        f'{model_name}_vectorizer.pkl',
-                        f'{model_name}_classifier.pkl',
-                        f'{model_name}_encoder.pkl'
-                    ]
+                        all_files_exist = all(
+                            os.path.exists(os.path.join(self.model_dir, f))
+                            for f in required_files
+                        )
 
-                    all_files_exist = all(
-                        os.path.exists(os.path.join(self.model_dir, f))
-                        for f in required_files
-                    )
+                        if all_files_exist:
+                            models.append({
+                                'name': model_name,
+                                'display_name': metadata.get('model_name', model_name),
+                                'model_type': metadata.get('model_type', 'Unknown'),
+                                'professions': metadata.get('professions', []),
+                                'num_professions': metadata.get('num_professions', 0),
+                                'creation_date': metadata.get('creation_date', 'Unknown'),
+                                'num_features': metadata.get('num_features', 0),
+                                'is_deep_learning': False
+                            })
 
-                    if all_files_exist:
-                        models.append({
-                            'name': model_name,
-                            'display_name': metadata.get('model_name', model_name),
-                            'model_type': metadata.get('model_type', 'Unknown'),
-                            'professions': metadata.get('professions', []),
-                            'num_professions': metadata.get('num_professions', 0),
-                            'creation_date': metadata.get('creation_date', 'Unknown'),
-                            'num_features': metadata.get('num_features', 0)
-                        })
+                    except Exception as e:
+                        print(f"Error leyendo metadatos de {model_name}: {e}")
+                        continue
 
-                except Exception as e:
-                    print(f"Error leyendo metadatos de {model_name}: {e}")
-                    continue
+        # Modelos de Deep Learning
+        deep_models_dir = "deep_models"
+        if os.path.exists(deep_models_dir):
+            for file in os.listdir(deep_models_dir):
+                if file.endswith('_metadata.pkl'):
+                    model_name = file.replace('_metadata.pkl', '')
+                    try:
+                        metadata_path = os.path.join(deep_models_dir, file)
+                        metadata = joblib.load(metadata_path)
+
+                        # Verificar que el modelo de Deep Learning existe
+                        model_path = os.path.join(deep_models_dir, f'{model_name}_model')
+                        encoder_path = os.path.join(deep_models_dir, f'{model_name}_encoder.pkl')
+
+                        if os.path.exists(model_path) and os.path.exists(encoder_path):
+                            models.append({
+                                'name': model_name,
+                                'display_name': metadata.get('model_name', model_name),
+                                'model_type': metadata.get('model_type', 'Deep Learning'),
+                                'professions': metadata.get('professions', []),
+                                'num_professions': metadata.get('num_professions', 0),
+                                'creation_date': metadata.get('creation_date', 'Unknown'),
+                                'num_features': metadata.get('max_length', 0),
+                                'is_deep_learning': True
+                            })
+
+                    except Exception as e:
+                        print(f"Error leyendo metadatos DL de {model_name}: {e}")
+                        continue
 
         return sorted(models, key=lambda x: x['creation_date'], reverse=True)
 
-    def delete_model(self, model_name):
-        """Elimina un modelo y todos sus archivos"""
+    def delete_model(self, model_name, is_deep_learning=False):
+        """Elimina un modelo y todos sus archivos (tradicional o Deep Learning)"""
         try:
-            files_to_delete = [
-                f'{model_name}_vectorizer.pkl',
-                f'{model_name}_classifier.pkl',
-                f'{model_name}_encoder.pkl',
-                f'{model_name}_metadata.pkl'
-            ]
-
             deleted_files = []
-            for file in files_to_delete:
-                file_path = os.path.join(self.model_dir, file)
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-                    deleted_files.append(file)
+
+            if is_deep_learning:
+                # Eliminar modelo de Deep Learning
+                deep_models_dir = "deep_models"
+
+                # Archivos a eliminar para DL
+                dl_files_to_delete = [
+                    f'{model_name}_metadata.pkl',
+                    f'{model_name}_encoder.pkl'
+                ]
+
+                # Eliminar archivos individuales
+                for file in dl_files_to_delete:
+                    file_path = os.path.join(deep_models_dir, file)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        deleted_files.append(file)
+
+                # Eliminar directorio del modelo TensorFlow
+                import shutil
+                model_dir_path = os.path.join(deep_models_dir, f'{model_name}_model')
+                if os.path.exists(model_dir_path):
+                    shutil.rmtree(model_dir_path)
+                    deleted_files.append(f'{model_name}_model/')
+
+                # Eliminar tokenizer BERT si existe
+                tokenizer_path = os.path.join(deep_models_dir, f'{model_name}_bert_tokenizer')
+                if os.path.exists(tokenizer_path):
+                    shutil.rmtree(tokenizer_path)
+                    deleted_files.append(f'{model_name}_bert_tokenizer/')
+
+                # Eliminar tokenizer tradicional si existe
+                tokenizer_pkl_path = os.path.join(deep_models_dir, f'{model_name}_tokenizer.pkl')
+                if os.path.exists(tokenizer_pkl_path):
+                    os.remove(tokenizer_pkl_path)
+                    deleted_files.append(f'{model_name}_tokenizer.pkl')
+
+            else:
+                # Eliminar modelo tradicional
+                files_to_delete = [
+                    f'{model_name}_vectorizer.pkl',
+                    f'{model_name}_classifier.pkl',
+                    f'{model_name}_encoder.pkl',
+                    f'{model_name}_metadata.pkl'
+                ]
+
+                for file in files_to_delete:
+                    file_path = os.path.join(self.model_dir, file)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        deleted_files.append(file)
 
             if deleted_files:
-                print(f"✅ Modelo '{model_name}' eliminado")
+                model_type = "Deep Learning" if is_deep_learning else "tradicional"
+                print(f"✅ Modelo {model_type} '{model_name}' eliminado")
                 print(f"   Archivos eliminados: {len(deleted_files)}")
                 return True
             else:

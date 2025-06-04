@@ -1,13 +1,50 @@
-# Clasificador de CVs por Profesiones - Versión Simplificada
+# ====================================================================
+# CV CLASSIFIER v2.0 - DEPENDENCIAS
+# ====================================================================
+# Clasificador inteligente de CVs con ML tradicional y Deep Learning
+#
+# INSTALACIÓN BÁSICA:
+# pip install -r requirements.txt
+#
+# INSTALACIÓN CON DEEP LEARNING:
+# pip install -r requirements.txt tensorflow transformers
+#
+# NOTA IMPORTANTE:
+# No especificamos versiones para evitar conflictos de dependencias.
+# pip instalará automáticamente las versiones compatibles más recientes.
+# ====================================================================
+
+# ====================================================================
+# DEPENDENCIAS BÁSICAS (REQUERIDAS)
+# ====================================================================
+
+# Interfaz Gráfica
 PyQt6
-PyPDF2
-pytesseract
-python-docx
-opencv-python
-Pillow
+
+# Machine Learning Tradicional
+scikit-learn
 pandas
 numpy
-scikit-learn
-tensorflow
-matplotlib
+
+# Procesamiento y Persistencia
 joblib
+
+# Procesamiento de Documentos
+python-docx
+PyPDF2
+
+# Procesamiento de Imágenes (OCR)
+Pillow
+pytesseract
+opencv-python
+
+# Visualización (opcional)
+matplotlib
+
+# ====================================================================
+# DEPENDENCIAS DEEP LEARNING (OPCIONALES)
+# ====================================================================
+# Descomenta para habilitar Deep Learning:
+
+# tensorflow
+# transformers

@@ -1,0 +1,66 @@
+# ====================================================================
+# CV CLASSIFIER v2.0 - DEPENDENCIAS DEEP LEARNING
+# ====================================================================
+# Dependencias adicionales para funcionalidad de Deep Learning
+#
+# INSTALACIÓN:
+# pip install -r requirements.txt -r requirements-deep.txt
+#
+# O instalar individualmente:
+# pip install tensorflow transformers torch
+# ====================================================================
+
+# ====================================================================
+# DEEP LEARNING FRAMEWORKS
+# ====================================================================
+
+# TensorFlow (para LSTM y CNN)
+tensorflow
+
+# Transformers (para BERT)
+transformers
+
+# PyTorch (backend alternativo)
+torch
+
+# ====================================================================
+# DEPENDENCIAS ADICIONALES PARA DEEP LEARNING
+# ====================================================================
+
+# Tokenización rápida
+tokenizers
+
+# Manejo de datasets
+datasets
+
+# Aceleración de entrenamiento
+accelerate
+
+# ====================================================================
+# DEPENDENCIAS OPCIONALES PARA GPU
+# ====================================================================
+# Solo si tienes GPU NVIDIA compatible:
+
+# tensorflow-gpu
+# torch-audio
+# torchvision
+
+# ====================================================================
+# NOTAS DE INSTALACIÓN
+# ====================================================================
+#
+# INSTALACIÓN COMPLETA:
+# pip install -r requirements.txt -r requirements-deep.txt
+#
+# INSTALACIÓN SOLO CPU (si no tienes GPU):
+# pip install tensorflow-cpu transformers torch --index-url https://download.pytorch.org/whl/cpu
+#
+# VERIFICAR INSTALACIÓN:
+# python main.py --check-deps
+#
+# SOLUCIÓN DE PROBLEMAS:
+# - Error de memoria: Reducir batch_size en configuración
+# - Error de CUDA: Instalar tensorflow-cpu en lugar de tensorflow
+# - Error de transformers: pip install --upgrade transformers
+#
+# ====================================================================
